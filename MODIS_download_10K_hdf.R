@@ -1,18 +1,23 @@
 
-library(RCurl,lib.loc="/home/fkaragulian/R/x86_64-pc-linux-gnu-library/3.3")
-library(stringr, lib.loc="/home/fkaragulian/R/x86_64-pc-linux-gnu-library/3.3")
-library(plyr, lib.loc="/home/fkaragulian/R/x86_64-pc-linux-gnu-library/3.3")
-library(dplyr, lib.loc="/home/fkaragulian/R/x86_64-pc-linux-gnu-library/3.3")
-library(threadr, lib.loc="/home/fkaragulian/R/x86_64-pc-linux-gnu-library/3.3")
-library(gdalUtils, lib.loc="/home/fkaragulian/R/x86_64-pc-linux-gnu-library/3.3")
-library(rgdal, lib.loc="/home/fkaragulian/R/x86_64-pc-linux-gnu-library/3.3")
-library(raster, lib.loc="/home/fkaragulian/R/x86_64-pc-linux-gnu-library/3.3")
-library(RNetCDF, lib.loc="/home/fkaragulian/R/x86_64-pc-linux-gnu-library/3.3")
-library(readr, lib.loc="/home/fkaragulian/R/x86_64-pc-linux-gnu-library/3.3")
+library(RCurl)
+library(stringr)
+library(plyr)
+library(dplyr)
+library(threadr)
+library(gdalUtils)
+library(rgdal)
+library(raster)
+library(RNetCDF)
+library(readr)
+library(gstat)
+library(curl)
+library(leaflet)
+library(webshot)
+library(htmlwidgets)
 
 setwd("/disk3/fkaragulian/MODIS_AOD/")
 wd <- getwd()
-Sys.time() 
+Sys.time()
 current_date <- str_sub(Sys.time(), start = 1, end = -10)
 str(current_date)
 
@@ -64,6 +69,4 @@ filenames_MODIS_10k <- sort(filenames_MODIS_10k)
 
 # start downloading data in the main directory -----------------------
 mapply(download.file, filenames_MODIS_10k,basename(filenames_MODIS_10k)) 
-
-
 
