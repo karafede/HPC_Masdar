@@ -19,7 +19,23 @@ library(tools)
 
 options(warn=-1)
 
+### remove file that might already exist in the current directory
+# Sys.time()
+# year <- str_sub(Sys.time(), start = 1, end = -16)
+# setwd(paste0("/disk3/fkaragulian/MODIS_AOD/",year))
+# 
+# folders <- list.files()
+# # get the most recent directory
+# folders <- sort(folders, decreasing = T)
+# wd <- getwd()
+# setwd(paste0(wd,"/",folders[1]))
+# filenames <- list.files()
+# if (file.exists(filenames)) file.remove(filenames) 
+
+#############################################################
+
 setwd("/disk3/fkaragulian/MODIS_AOD/")
+# setwd("/research/cesam/AirQuality/")
 # setwd("/disk3/fkaragulian/MODIS_AOD/2017/001/")
 # folder_day <- as.character("001")
 
@@ -85,6 +101,8 @@ Overpass_times_Terra <- read.csv(paste0("/disk3/fkaragulian/MODIS_AOD/Overpass_t
 Overpass_times_Aqua <- read.csv(paste0("/disk3/fkaragulian/MODIS_AOD/Overpass_times_Aqua_",
                                        current_date,".csv"))
 
+
+
 matches_Terra <- unique (grep(paste(Overpass_times_Terra$x,collapse="|"), 
                               filenames_Terra, value=TRUE))
 
@@ -109,29 +127,29 @@ filenames_MODIS_10k_Aqua <- sort(filenames_MODIS_10k_Aqua)
 
 # start downloading data in the main directory -----------------------
 
-# mapply(download.file, filenames_MODIS_10k_Terra,basename(filenames_MODIS_10k_Terra)) 
-# mapply(download.file, filenames_MODIS_10k_Aqua,basename(filenames_MODIS_10k_Aqua)) 
+ mapply(download.file, filenames_MODIS_10k_Terra,basename(filenames_MODIS_10k_Terra))
+ mapply(download.file, filenames_MODIS_10k_Aqua,basename(filenames_MODIS_10k_Aqua))
 
 #### newly added
 
 
-tryCatch({ 
-  mapply(download.file, filenames_MODIS_10k_Terra,basename(filenames_MODIS_10k_Terra)) 
-  
-}, error= function(err) { print(paste0("No TERRA Today"))
-  
-}, finally = {
-  
-})
-
-tryCatch({ 
-  mapply(download.file, filenames_MODIS_10k_Aqua,basename(filenames_MODIS_10k_Aqua))  
-  
-}, error= function(err) { print(paste0("No AQUA Today"))
-  
-}, finally = {
-  
-})
+# tryCatch({
+#   mapply(download.file, filenames_MODIS_10k_Terra,basename(filenames_MODIS_10k_Terra))
+# 
+# }, error= function(err) { print(paste0("No TERRA Today"))
+# 
+# }, finally = {
+# 
+# })
+# 
+# tryCatch({
+#   mapply(download.file, filenames_MODIS_10k_Aqua,basename(filenames_MODIS_10k_Aqua))
+# 
+# }, error= function(err) { print(paste0("No AQUA Today"))
+# 
+# }, finally = {
+# 
+# })
 
 
 ###############################################################################
@@ -249,7 +267,7 @@ extract_HDF <- function (file) {      ## this is the filenames
 BBB <- lapply(filenames, extract_HDF)
 
 # delete HDF files
-if (file.exists(filenames)) file.remove(filenames)  
+ if (file.exists(filenames)) file.remove(filenames)  
 
 
 ######################################################################################
@@ -359,7 +377,7 @@ extract_HDF <- function (file) {      ## this is the filenames
 BBB <- lapply(filenames, extract_HDF)
 
 # delete HDF files
-if (file.exists(filenames)) file.remove(filenames)  
+ if (file.exists(filenames)) file.remove(filenames)  
 
 ######################################################################################
 ######################################################################################
@@ -582,8 +600,8 @@ Data_Emirates_tif_1km <- mask(Data_Emirates_tif_1km, shp_UAE)
 
 # plot(Data_Emirates_tif_1km)
 
-file.Emirates_tif_1km <- paste0("AOD_MODIS_1km_UAE","_",folder_day,".tif")
-Emirates_tif_1km_tiff <- writeRaster(Data_Emirates_tif_1km, filename = file.Emirates_tif_1km, format = 'GTiff', overwrite = T)
+file.Emirates_tif_1km <- paste0("PM25_MODIS_1km_UAE","_",folder_day,".tif")
+Emirates_tif_1km_tiff <- writeRaster(Data_Emirates_tif_1km*94, filename = file.Emirates_tif_1km, format = 'GTiff', overwrite = T)
 
 
 ### Extract points from raster tiff ############################################
@@ -601,7 +619,7 @@ write_csv(Emirates_tif_1km_pts , paste0("Emirates_tif_1km.csv","_",folder_day,".
 library(leaflet)
 
 # linear conversion AOD into PM25
-Emirates_tif_1km_tiff <- Emirates_tif_1km_tiff*94
+Emirates_tif_1km_tiff <- Data_Emirates_tif_1km*94
 
 # define color palette
 rast_pal_EMIRATES <- colorNumeric(c("#9999FF", "#ffd699", "#FFFF00", "#ffbf00", "#ffc700", "#FF0000", "#994c00"),
